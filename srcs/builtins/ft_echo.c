@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hedi <hedi@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hzaz <hzaz@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 15:27:39 by vabertau          #+#    #+#             */
-/*   Updated: 2024/05/09 00:47:55 by hedi             ###   ########.fr       */
+/*   Updated: 2024/05/13 18:06:49 by hzaz             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ int	ft_echo(char **split_cmd)
 int	ft_exit(char **split_cmd, t_data *data)
 {
 	int exit_status = 0;
-
+	if (split_cmd[2])
+		ft_putstr_fd("exit: too many arguments", 2);
 	if (split_cmd[1] != NULL)
 		exit_status = ft_atoi(split_cmd[1]); // Convert string to int for exit status
 	exit_free(data, exit_status);
