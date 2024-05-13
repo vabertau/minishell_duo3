@@ -1,0 +1,159 @@
+VALGRIND CMD: make && valgrind --track-fds=yes --trace-children=yes --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=readline.supp ./minishell
+
+
+OLD VALGRIND CMD: valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes --trace-children=yes --track-origins=yes --suppressions=readline.supp ./minishell
+
+
+
+TO DO
+
+copy envp LEAKS
+
+cd not working
+ctrl d met un espace alors au il ne doit pas en mettre
+
+export
+unset
+
+checker comment doit fonctionner la commande exit
+
+1) get_input
+
+1) Check errors : checks(data)
+
+check_empty checks for empty cmdline, calls parsing_error if empty.
+
+check_unclosedq Checks for unclosed quotes in the beginning and returns parsing error if there are any.
+Better to check in the beginning, allows not to handle unclosed quotes in tokens
+
+echo $hey $SHELL -> espace en trop
+
+
+
+
+
+
+
+
+
+
+-----------------------------
+
+shell->cmdline is filled with cmd line using readline
+
+insert_space
+
+0) Check errors
+
+It seems easier to check for errors in the beginning.
+Because errors are not dragged after into lexer, inducing dfficulties.
+
+check_unclosedq checks for unclosed quote.
+
+check_schar_error checks for bad special characters.
+
+
+PARSING ERRORS TO CHECKS
+
+OK Pipe first token
+OK Pipe last token
+
+OK Wrong following characters
+
+| |
+
+
+1) Lexer
+
+// - insert_spaces: insert spaces between the tokens (echo>infile becomes echo > infile)
+
+- insert_spaces_quotes(t_mini *shell): insert space after even insert_spaces_quotes
+USELESS ? Creates errors
+
+- count_tokens: counts the nb of tokens by splitting with spaces, skipping quotes
+
+- init_lex: will init struct t_lex :
+
+typedef struct s_lex
+{
+	int				i;
+	int				nb_expansions;
+	char			*word;
+	t_token			token;
+	struct s_lex	*next;
+}	t_lex;
+malloc the linked list thanks to nb_token & initiates the elements of the struct
+
+- assign_word(shell): fills word in lex structure.
+  with get_token : big malloc with size of cmdline + 1 for each token. Fills with the token, spliting with spaces, skipping finished quotes.
+
+  ft_quotesplit is ike ft_split with ' ' but it also skips finished quotes, and it doesn't copy the quotes when they are finihed as we
+  only need what is inside of them.
+
+  As quotes are deleted by ft_quotesplit, the function keeps the info thar the token was betwen quotes in booleans data->is_bq[i].
+  That int* will later be used by fill types to fill type DQUOTE if data->is_bq[i] == 1.
+
+
+- assign_token : if it is | token pipe, same for < << > >>, if not token WORD.
+
+------------
+
+OK Unclosed quotes à gérer: dans toutes les fonctions de passage/gestion de quote : ajouter fonction ft_strchr de quote de fermeture. N'effectuer ces fonctions que si quopte de fermeture.
+
+fix to do on test"test test" counting 2 tokens instead of 1 -> l erruer vient du fait
+que nb token ancienne fonction ne compte pas comme substr quote : refaire nb token
+comme substr quote
+
+info que single quote ou double quote sera probablement a garder : simple juste modifier ft_quotesplit et
+transformer data->is_bq en int et non bool avec valeur 0 1 2 pour pas bq, bsq, bdq.
+
+Fixs :
+
+mallocs de tout cmdline trop grand dans get_token -> réduit aux mallocs nécessaires
+
+Ajout d espace seuleument apres double quote erreur sur 'test'test
+
+2) Parser
+
+The parser will store into a structure the commands to execute.
+
+count_pipes_and_commands: counts the number of pipes using types
+
+init_cmd; is malloc and init commands structure with the nb of commands.
+
+create_cmd: fills cmd structure:
+typedef struct s_cmd{
+	char *full_cmd;
+	char **split_cmd;
+	t_token
+	struct s_cmd *next;
+}
+
+}
+
+In that function:
+
+	fill_full_cmd fills char *full_cmd with full commands
+	fill_split_cmd fills every node of exec with the command splitted by word, without redir and infiles\outfiles
+	fill_redir
+
+
+FIXES TO DO
+
+bug sur >| voir comment gerer ou mettre en parsing error
+
+protect from unauthorized operators ; etc
+
+CORRECTION GRID
+
+Exit ne quitte pas le terminal
+
+pas de command not found
+
+echo $? apres les expand
+---------------------------------
+
+
+
+
+
