@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hedi <hedi@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hzaz <hzaz@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 00:47:00 by hedi              #+#    #+#             */
-/*   Updated: 2024/05/12 17:02:21 by hedi             ###   ########.fr       */
+/*   Updated: 2024/05/13 18:01:12 by hzaz             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -245,7 +245,6 @@ int	ft_putenv(char *s, t_data *shell)
 	int pos;
 	
 	pos = var_in_env(s, shell);
-	printf("\n%d\n", pos);
 	if (pos > -1)
 		ft_update_env(s, shell, pos);
 	else
@@ -279,9 +278,11 @@ int	ft_export(char **split_cmd, t_data *shell)
 {
 	int	i;
 	char *tmp;
+	int	ret;
 	t_env	*e;
+
+	ret = 0;
 	e = shell->env;
-	
 	if (split_cmd[1] == NULL)
 	{
 		i = -1;
@@ -305,7 +306,7 @@ int	ft_export(char **split_cmd, t_data *shell)
 			exit_free(shell, EXIT_FAILURE);
 		}
 	}
-	return (0);
+	return (ret);
 }
 
 int	ft_unset(char **split_cmd)

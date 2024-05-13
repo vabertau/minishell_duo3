@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit_free.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vabertau <vabertau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hzaz <hzaz@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 15:02:38 by vabertau          #+#    #+#             */
-/*   Updated: 2024/05/12 12:47:35 by vabertau         ###   ########.fr       */
+/*   Updated: 2024/05/13 17:53:41 by hzaz             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void	free_all(t_data *data)
 		free(data->is_bq);
 	if (data->pipe_fds)
 		free(data->pipe_fds);
+	free_env(data);
 }
 
 void	exit_free(t_data *data, int exit_code)

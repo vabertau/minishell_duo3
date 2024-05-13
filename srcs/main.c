@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vabertau <vabertau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hzaz <hzaz@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 16:54:44 by vabertau          #+#    #+#             */
-/*   Updated: 2024/05/13 17:07:36 by vabertau         ###   ########.fr       */
+/*   Updated: 2024/05/13 17:57:01 by hzaz             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,8 @@ void	set_char_env(t_data *shell)
 	int		len;
 	int		i;
 
-	if(shell->char_env)
-		free(shell->char_env);
+	// if(shell->char_env)
+	// 	free(shell->char_env);
 	i = -1;
 	tmp = shell->env;
 	len = len_env(tmp);
@@ -165,6 +165,7 @@ int	main(int argc, char **argv, char **envp)
 	//setup_signal_handlers(handle_sigint_interactive, handle_sigquit);
 	(void)argc;
 	(void)argv;
+	data.char_env = NULL;
 	data.last_return_code = 0;
 
 	data.envp = envp;

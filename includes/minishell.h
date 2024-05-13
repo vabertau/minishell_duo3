@@ -77,6 +77,7 @@ typedef struct s_data
 	int				*is_bq;
 	int				last_pid;
 	int				last_return_code;
+	bool			spec_built;
 	bool			sh_exit_loop;
 	bool			void_expand;
 }					t_data;
@@ -145,6 +146,7 @@ void				free_bf_newprompt(t_data *data);
 void				set_exitloop_free(t_data *data);
 void				free_all(t_data *data);
 void				free_token(t_token *token);
+void free_env(t_data *shell);
 
 // ====== BUILTINS ======
 

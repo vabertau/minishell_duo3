@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vabertau <vabertau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hzaz <hzaz@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 17:43:54 by hzaz              #+#    #+#             */
-/*   Updated: 2024/05/13 16:31:49 by vabertau         ###   ########.fr       */
+/*   Updated: 2024/05/13 17:45:41 by hzaz             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,10 +94,32 @@ void	close_wait(t_data *shell)
 	shell->pipe_fds = NULL;
 }
 
+int	special_built(t_exec *cmd, t_data *shell)
+{
+	char	**f;
+
+	if (cmd->next)
+		return (0);
+	shell->spec_built = TRUE;
+	f = cmd->split_cmd;
+	if (ft_same_str(f[0], "cd", 2))
+		return (ft_cd(f, shell));
+	else if (ft_same_str(f[0], "export", 6))
+		return (ft_export(f, shell));
+	else if (ft_same_str(f[0], "unset", 5))
+		return (ft_unset(f));
+	else if (ft_same_str(f[0], "env", 3))
+		return (ft_env(shell->envp));
+	else if (ft_same_str(f[0], "exit", 4))
+		return (ft_exit(f, shell));
+	shell->spec_built = FALSE;
+	return (0);
+}
+
 int	executor(t_data *shell)
 {
 	int		status;
-	t_exec	*current_cmd;
+	int		ret;
 
 	prepare_heredocs(shell);
 	if (shell->nb_cmd > 1)
@@ -105,7 +127,10 @@ int	executor(t_data *shell)
 		if (!init_pipes(shell))
 			exit_free(shell, 127);
 	}
-	current_cmd = shell->exec;
+	
+	ret = special_built(shell->exec, shell);
+	if (shell->spec_built)
+		return (ret);
 	fork_cmd(shell);
 	close_wait(shell);
 	return (shell->last_return_code);
