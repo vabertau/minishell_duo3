@@ -6,7 +6,7 @@
 /*   By: hzaz <hzaz@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 17:43:54 by hzaz              #+#    #+#             */
-/*   Updated: 2024/05/13 17:45:41 by hzaz             ###   ########.fr       */
+/*   Updated: 2024/05/13 20:11:11 by hzaz             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,10 @@ int	special_built(t_exec *cmd, t_data *shell)
 
 	if (cmd->next)
 		return (0);
-	shell->spec_built = TRUE;
 	f = cmd->split_cmd;
+	if (!f[0])
+		return (0);
+	shell->spec_built = TRUE;
 	if (ft_same_str(f[0], "cd", 2))
 		return (ft_cd(f, shell));
 	else if (ft_same_str(f[0], "export", 6))
