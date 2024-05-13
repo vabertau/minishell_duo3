@@ -6,7 +6,7 @@
 /*   By: hzaz <hzaz@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 15:27:39 by vabertau          #+#    #+#             */
-/*   Updated: 2024/05/13 18:06:49 by hzaz             ###   ########.fr       */
+/*   Updated: 2024/05/13 18:30:35 by hzaz             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,42 @@ int	ft_echo(char **split_cmd)
 	return (0);
 }
 
+int	str_is_num(char *s)
+{
+	int	i;
+
+	i = -1;
+	if (s[0] == '+' || s[0] == '-')
+		i++;
+	while (s && s[++i])
+	{
+		if (!(s[i] >= '0' && s[i] <= '9'))
+			return (0);
+	}
+	return (1);
+}
+
 int	ft_exit(char **split_cmd, t_data *data)
 {
-	int exit_status = 0;
+	int exit_status;
+
+	exit_status = 0;
 	if (split_cmd[2])
+	{
 		ft_putstr_fd("exit: too many arguments", 2);
-	if (split_cmd[1] != NULL)
-		exit_status = ft_atoi(split_cmd[1]); // Convert string to int for exit status
+		exit_status = 1;
+	}
+	else
+	{
+		if (split_cmd[1] != NULL && str_is_num(split_cmd[1]))
+			exit_status = ft_atoi(split_cmd[1]);
+		if (split_cmd[1] != NULL  && !str_is_num(split_cmd[1]))
+		{
+			ft_putstr_fd("exit: numeric argument required", 2);
+			exit_status = 2;
+		}
+	}
+
 	exit_free(data, exit_status);
 	return (exit_status); // This will end the program
 }

@@ -6,7 +6,7 @@
 /*   By: hzaz <hzaz@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 00:47:00 by hedi              #+#    #+#             */
-/*   Updated: 2024/05/13 18:01:12 by hzaz             ###   ########.fr       */
+/*   Updated: 2024/05/13 18:19:42 by hzaz             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,11 +212,20 @@ void	ft_add_env(char *s, t_data *shell)
 		perror("malloc");
 		return; // Gérer l'échec de l'allocation plus proprement si nécessaire
 	}
-
-	new_node->var = join_free1(ft_strjoin(str[0], "="), str[1]);
-	new_node->var_name = ft_strdup(str[0]);
-	new_node->val = str[1] ? ft_strdup(str[1]) : NULL;
-	new_node->next = NULL;
+	if (!str[1])
+	{
+		new_node->var = ft_strdup(str[0]);
+		new_node->var_name = 
+		new_node->val = NULL;
+		new_node->next = NULL;
+	}
+	else
+	{
+		new_node->var = join_free1(ft_strjoin(str[0], "="), str[1]);
+		new_node->var_name = ft_strdup(str[0]);
+		new_node->val = str[1] ? ft_strdup(str[1]) : NULL;
+		new_node->next = NULL;
+	}
 
 	if (shell->env == NULL)
 	{
@@ -299,6 +308,7 @@ int	ft_export(char **split_cmd, t_data *shell)
 		{
 			tmp = ft_strjoin("bash: export: `", split_cmd[i]);
 			ft_putstr_fd_free(join_free1(tmp, "': not a valid identifier\n"), 2);
+			ret = 1;
 		}
 		else if (ft_putenv(split_cmd[i], shell) != 1) // Add to the environment
 		{
