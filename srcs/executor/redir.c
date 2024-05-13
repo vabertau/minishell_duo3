@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vabertau <vabertau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hzaz <hzaz@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 21:03:31 by hedi              #+#    #+#             */
-/*   Updated: 2024/05/13 16:31:03 by vabertau         ###   ########.fr       */
+/*   Updated: 2024/05/13 18:54:42 by hzaz             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,24 +85,35 @@ void	fill_redir_heredoc(t_data *shell, int *cpt, t_token *redir)
 	int		fd;
 	char	*line;
 	char	*full_path;
+	pid_t	pid;
+	int 	s;
 
-	heredoc_signals();
-	full_path = join_free2("/tmp/heredoc_", ft_itoa((*cpt)++));
-	fd = safe_open(full_path, O_RDWR | O_CREAT | O_TRUNC, 0600, shell);
-	line = readline("> ");
-	while ((line) != NULL)
+	pid = fork();
+	if (pid == -1)
+		perror("fork");
+	if (pid == 0)
 	{
-		if (ft_strcmp(line, redir->word) == 0)
-		{
-			free(line);
-			break ;
-		}
-		write(fd, line, strlen(line));
-		write(fd, "\n", 1);
-		free(line);
+		heredoc_signals();
+		full_path = join_free2("/tmp/heredoc_", ft_itoa((*cpt)++));
+		fd = safe_open(full_path, O_RDWR | O_CREAT | O_TRUNC, 0600, shell);
 		line = readline("> ");
+		while ((line) != NULL)
+		{
+			if (ft_strcmp(line, redir->word) == 0)
+			{
+				free(line);
+				break ;
+			}
+			write(fd, line, strlen(line));
+			write(fd, "\n", 1);
+			free(line);
+			line = readline("> ");
+		}
+		safe_close(fd, shell);
+		redir->word = ft_strdup(full_path);
+		free(full_path);
 	}
-	safe_close(fd, shell);
-	redir->word = ft_strdup(full_path);
-	free(full_path);
+	else
+		waitpid(pid, &s, 0);
+
 }
